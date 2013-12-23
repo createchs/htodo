@@ -6,4 +6,13 @@ class Task extends BaseTask
 	{
 		return parent::model($className);
 	}
+
+    public function behaviors()
+    {
+        return [
+            'ModelHistoryBehavior' => [
+                'class' => 'application.behaviors.ModelHistoryBehavior'
+            ],
+        ];
+    }
 }
