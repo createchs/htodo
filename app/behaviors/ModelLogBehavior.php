@@ -13,7 +13,6 @@ class ModelLogBehavior extends CActiveRecordBehavior
         $this->oldAttributes = $this->owner->attributes;
     }
 
-    // @TODO: if !currentTransaction - обернуть в транзакцию
     public function afterSave($event)
     {
         $changedAttributes = $this->getAttributesDiff($this->oldAttributes);
@@ -23,20 +22,28 @@ class ModelLogBehavior extends CActiveRecordBehavior
             return;
         }
 
-        $ModelLog = new ModelLog;
-        $ModelLog->created_at = $this->dbNow;
-        $ModelLog->model = $this->modelName;
-        $ModelLog->pk = $this->modelPrimaryKey;
-        $ModelLog->event = $this->modelEvent;
-        $ModelLog->save();
+        $transaction = $this->transaction;
 
-        foreach ($changedAttributes as $attr_name => $attr_value) {
-            $AttrLog = new AttrLog;
-            $AttrLog->model_log_id = $ModelLog->primaryKey;
-            $AttrLog->name = $attr_name;
-            $AttrLog->value = $attr_value;
-            $AttrLog->old_value = $this->getOldAttrValue($attr_name);
-            $AttrLog->save();
+        try {
+            $ModelLog = new ModelLog;
+            $ModelLog->created_at = $this->dbNow;
+            $ModelLog->model = $this->modelName;
+            $ModelLog->pk = $this->modelPrimaryKey;
+            $ModelLog->event = $this->modelEvent;
+            $ModelLog->save();
+
+            foreach ($changedAttributes as $attr_name => $attr_value) {
+                $AttrLog = new AttrLog;
+                $AttrLog->model_log_id = $ModelLog->primaryKey;
+                $AttrLog->name = $attr_name;
+                $AttrLog->value = $attr_value;
+                $AttrLog->old_value = $this->getOldAttrValue($attr_name);
+                $AttrLog->save();
+            }
+            $transaction->commit();
+        } catch (Exception $e) {
+            $transaction->rollback();
+            throw $e;
         }
 
         // Для последующих сохранений модели
@@ -103,5 +110,12 @@ class ModelLogBehavior extends CActiveRecordBehavior
     public function getOldAttrValue($attr_name)
     {
         return $this->oldAttributes[$attr_name];
+    }
+
+    public function getTransaction()
+    {
+        return !is_null($this->owner->dbConnection->currentTransaction) 
+            ? $this->owner->dbConnection->currentTransaction 
+            : $this->owner->dbConnection->beginTransaction();
     }
 }
