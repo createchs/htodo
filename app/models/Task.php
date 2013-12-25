@@ -10,8 +10,8 @@ class Task extends BaseTask
     public function behaviors()
     {
         return [
-            'ModelHistoryBehavior' => [
-                'class' => 'application.behaviors.ModelHistoryBehavior'
+            'ModelLogBehavior' => [
+                'class' => 'application.behaviors.ModelLogBehavior'
             ],
         ];
     }
