@@ -3,7 +3,7 @@
 return [
 	'basePath' => dirname(__DIR__),
 
-	'name' => 'yii-simple',
+	'name' => 'htodo',
 	
 	'language' => 'en',
 
