@@ -60,12 +60,14 @@ class ModelLogBehavior extends CActiveRecordBehavior
         $ModelLog->save();
     }
 
-    // для найденного объекта реализовать getAttrLog('attr_name') возвращающий список моделей изменений этого атрибута в хронологическом порядке
-    // $Logs = Item::model()->findByPk(1)->getAttrLog('attr_name');
-    // получаем массив моделей экземпляров модели AttrLog, в приджоиненными метаданными из ModelLog
-    public function getAttributesLog($attr_name)
+    public function getAttributeLog($attr_name)
     {
-        return;
+        return ModelLog::model()
+            ->byModel($this->modelName)
+            ->byPk($this->modelPrimaryKey)
+            ->byAttrName($attr_name)
+            ->recently()
+        ->findAll();
     }
 
 
