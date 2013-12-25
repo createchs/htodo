@@ -14,6 +14,7 @@ class ModelLogBehavior extends CActiveRecordBehavior
     }
 
     // @TODO: if !currentTransaction - обернуть в транзакцию
+    // @TODO: сделать хранение значения старого атрибута
     public function afterSave($event)
     {
         $changedAttributes = $this->getAttributesDiff($this->oldAttributes);
@@ -35,6 +36,7 @@ class ModelLogBehavior extends CActiveRecordBehavior
             $AttrLog->model_log_id = $ModelLog->primaryKey;
             $AttrLog->name = $attr_name;
             $AttrLog->value = $attr_value;
+            $AttrLog->old_value = $this->getOldAttrValue($attr_name);
             $AttrLog->save();
         }
 
@@ -97,5 +99,10 @@ class ModelLogBehavior extends CActiveRecordBehavior
     public function setOldAttributes($attributes)
     {
         $this->_old_attributes = $attributes;
+    }
+
+    public function getOldAttrValue($attr_name)
+    {
+        return $this->oldAttributes[$attr_name];
     }
 }

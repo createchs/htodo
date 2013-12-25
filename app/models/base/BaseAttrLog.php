@@ -8,6 +8,7 @@
  * @property integer $model_log_id
  * @property string $name
  * @property string $value
+ * @property string $old_value
  *
  * The followings are the available model relations:
  * @property ModelLog $modelLog
@@ -31,10 +32,10 @@ class BaseAttrLog extends ActiveRecord
 		// will receive user inputs.
 		return array(
 			array('model_log_id', 'numerical', 'integerOnly'=>true),
-			array('name, value', 'length', 'max'=>255),
+			array('name, value, old_value', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, model_log_id, name, value', 'safe', 'on'=>'search'),
+			array('id, model_log_id, name, value, old_value', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -60,6 +61,7 @@ class BaseAttrLog extends ActiveRecord
 			'model_log_id' => 'Model Log',
 			'name' => 'Name',
 			'value' => 'Value',
+			'old_value' => 'Old Value',
 		);
 	}
 
@@ -85,6 +87,7 @@ class BaseAttrLog extends ActiveRecord
 		$criteria->compare('model_log_id',$this->model_log_id);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('value',$this->value,true);
+		$criteria->compare('old_value',$this->old_value,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
