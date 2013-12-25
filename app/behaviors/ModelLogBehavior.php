@@ -14,7 +14,6 @@ class ModelLogBehavior extends CActiveRecordBehavior
     }
 
     // @TODO: if !currentTransaction - обернуть в транзакцию
-    // @TODO: сделать хранение значения старого атрибута
     public function afterSave($event)
     {
         $changedAttributes = $this->getAttributesDiff($this->oldAttributes);
