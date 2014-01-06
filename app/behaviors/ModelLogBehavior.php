@@ -7,6 +7,7 @@ class ModelLogBehavior extends CActiveRecordBehavior
     const EVENT_DELETE = 'delete';
 
     private $_old_attributes = [];
+    private $isParentTransaction = false;
 
     public function afterFind($event)
     {
@@ -40,7 +41,9 @@ class ModelLogBehavior extends CActiveRecordBehavior
                 $AttrLog->old_value = $this->getOldAttrValue($attr_name);
                 $AttrLog->save();
             }
-            $transaction->commit();
+            if (!$this->isParentTransaction) {
+                $transaction->commit();
+            }
         } catch (Exception $e) {
             $transaction->rollback();
             throw $e;
@@ -111,13 +114,17 @@ class ModelLogBehavior extends CActiveRecordBehavior
 
     public function getOldAttrValue($attr_name)
     {
-        return $this->oldAttributes[$attr_name];
+        return isset($this->oldAttributes[$attr_name]) ? $this->oldAttributes[$attr_name] : null;
     }
 
     public function getTransaction()
     {
-        return !is_null($this->owner->dbConnection->currentTransaction) 
-            ? $this->owner->dbConnection->currentTransaction 
-            : $this->owner->dbConnection->beginTransaction();
+        if (!is_null($this->owner->dbConnection->currentTransaction)) {
+            $this->isParentTransaction = true;
+            return $this->owner->dbConnection->currentTransaction;
+        } else {
+            $this->isParentTransaction = false;
+            return $this->owner->dbConnection->beginTransaction();
+        }
     }
 }

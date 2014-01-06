@@ -1,26 +1,20 @@
 <?php
 
 /**
- * This is the model class for table "attr_log".
+ * This is the model class for table "list_order".
  *
- * The followings are the available columns in table 'attr_log':
+ * The followings are the available columns in table 'list_order':
  * @property integer $id
- * @property integer $model_log_id
- * @property string $name
- * @property string $value
- * @property string $old_value
- *
- * The followings are the available model relations:
- * @property ModelLog $modelLog
+ * @property string $order
  */
-class BaseAttrLog extends ActiveRecord
+class BaseListOrder extends ActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'attr_log';
+		return 'list_order';
 	}
 
 	/**
@@ -31,12 +25,10 @@ class BaseAttrLog extends ActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('model_log_id', 'numerical', 'integerOnly'=>true),
-			array('name', 'length', 'max'=>255),
-			array('value, old_value', 'safe'),
+			array('order', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, model_log_id, name, value, old_value', 'safe', 'on'=>'search'),
+			array('id, order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -48,7 +40,6 @@ class BaseAttrLog extends ActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'modelLog' => array(self::BELONGS_TO, 'ModelLog', 'model_log_id'),
 		);
 	}
 
@@ -59,10 +50,7 @@ class BaseAttrLog extends ActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'model_log_id' => 'Model Log',
-			'name' => 'Name',
-			'value' => 'Value',
-			'old_value' => 'Old Value',
+			'order' => 'Order',
 		);
 	}
 
@@ -85,10 +73,7 @@ class BaseAttrLog extends ActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('model_log_id',$this->model_log_id);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('value',$this->value,true);
-		$criteria->compare('old_value',$this->old_value,true);
+		$criteria->compare('order',$this->order,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -99,7 +84,7 @@ class BaseAttrLog extends ActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return BaseAttrLog the static model class
+	 * @return BaseListOrder the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

@@ -1,17 +1,14 @@
 <?php
 
-class m131224_061916_create_table_attr_log extends CDbMigration
+class m140105_121553_create_table_list_order extends CDbMigration
 {
-    public $table_name = 'attr_log';
+    public $table_name = 'list_order';
 
 	public function up()
 	{
         $this->createTable($this->table_name, [
             'id' => 'pk',
-            'model_log_id' => 'integer',
-            'name' => 'string',
-            'value' => 'text',
-            'old_value' => 'text',
+            'order' => 'text',
         ], 'Engine=InnoDB');
 	}
 
