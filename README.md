@@ -10,7 +10,7 @@ htodo - history todo project
 
 
 ###Установка:
-    cp protected/config/db.sample.php -> protected/config/db.php
+    cp app/config/db.sample.php app/config/db.php
     composer install
     bower install
     protected/yiic migrate
